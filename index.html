@@ -2,68 +2,105 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<title>Document</title>
-		<!-- RX7cpb0fJuEcNCLgdLL57kai0Rx1l77z -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Cat Gif Generator</title>
+		<style>
+			body {
+				margin: 0;
+				font-family: Arial, sans-serif;
+				background-color: #f5f5f5;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				height: 100vh;
+			}
+
+			#gif-container {
+				margin-bottom: 20px;
+			}
+
+			img {
+				max-width: 100%;
+				height: auto;
+				border-radius: 5px;
+				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+			}
+
+			.text-input {
+				margin-top: 20px;
+				margin-bottom: 20px;
+				text-align: center;
+			}
+
+			label {
+				font-size: 18px;
+				font-weight: bold;
+				color: #333;
+				display: block;
+				margin-bottom: 5px;
+			}
+
+			input[type="text"] {
+				padding: 10px;
+				font-size: 16px;
+				border: 1px solid #ccc;
+				border-radius: 5px;
+				width: 250px;
+			}
+
+			button {
+				padding: 10px 20px;
+				font-size: 16px;
+				background-color: #4caf50;
+				color: white;
+				border: none;
+				border-radius: 5px;
+				cursor: pointer;
+				transition: background-color 0.3s ease;
+			}
+
+			button:hover {
+				background-color: #45a049;
+			}
+		</style>
 	</head>
-	<body
-		style="
-			display: flex;
-			flex-direction: column;
-			justify-content: space-around;
-			align-items: center;
-			height: 100vh;
-		"
-	>
-		<img src="#" />
-		<button id="newgifbutton">Click for new cat gif!!</button>
-		<div class="textinput">
-			<label for="input">Type for a new gif!</label>
-			<input type="text" name="input" id="input" />
+	<body>
+		<div id="gif-container">
+			<img id="gif" src="#" alt="Cat Gif" />
+		</div>
+		<button id="new-gif-button">Click for new cat gif!!</button>
+		<div class="text-input">
+			<label for="search-input">Search for a new gif!</label>
+			<input type="text" id="search-input" placeholder="Type here..." />
 		</div>
 
 		<script>
-			const img = document.querySelector("img");
-			const button = document.querySelector("button");
-			const input = document.querySelector("input");
+			const gifImg = document.getElementById("gif");
+			const newGifButton = document.getElementById("new-gif-button");
+			const searchInput = document.getElementById("search-input");
 
-			fetch(
-				"https://api.giphy.com/v1/gifs/translate?api_key=RX7cpb0fJuEcNCLgdLL57kai0Rx1l77z&s=cats",
-				{ mode: "cors" }
-			)
-				.then(function (response) {
-					return response.json();
-				})
-				.then(function (response) {
-					img.src = response.data.images.original.url;
-				});
-
-			button.addEventListener("click", function () {
+			function fetchGif(searchTerm) {
 				fetch(
-					"https://api.giphy.com/v1/gifs/translate?api_key=RX7cpb0fJuEcNCLgdLL57kai0Rx1l77z&s=cats",
+					`https://api.giphy.com/v1/gifs/translate?api_key=RX7cpb0fJuEcNCLgdLL57kai0Rx1l77z&s=${searchTerm}`,
 					{ mode: "cors" }
 				)
-					.then(function (response) {
-						return response.json();
+					.then((response) => response.json())
+					.then((data) => {
+						gifImg.src = data.data.images.original.url;
 					})
-					.then(function (response) {
-						img.src = response.data.images.original.url;
-					});
+					.catch((error) => console.error("Error fetching gif:", error));
+			}
+
+			// Fetch initial gif
+			fetchGif("cats");
+
+			newGifButton.addEventListener("click", () => {
+				fetchGif("cats");
 			});
 
-			input.addEventListener("input", function () {
-				value = input.value;
-
-				fetch(
-					"https://api.giphy.com/v1/gifs/translate?api_key=RX7cpb0fJuEcNCLgdLL57kai0Rx1l77z&s=" +
-						value,
-					{ mode: "cors" }
-				)
-					.then(function (response) {
-						return response.json();
-					})
-					.then(function (response) {
-						img.src = response.data.images.original.url;
-					});
+			searchInput.addEventListener("input", () => {
+				fetchGif(searchInput.value.trim());
 			});
 		</script>
 	</body>
